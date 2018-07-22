@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Customers List";
+}
+
+<div class="row" id="app">
+    <div class="row">
+        <div class="form col-md-6">
+            <input v-model="term" v-on:input="search" placeholder="Search by name" class="form-control" type="text" />
+        </div>
+    </div>
+    <div class="row" style="margin-top: 20px">
+        <div class="col-md-6">
+            <table class="table table-hover table-striped table-responsive table-bordered">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Orders</th>
+                    </tr>
+                </thead>
+                <tfoot></tfoot>
+                <tbody >
+                    <tr v-for="customer in customers" v-on:click="customerSelected(customer.CustomerId)" style="cursor: pointer;">
+                        <td>{{ customer.ContactName }}</td>
+                        <td>{{ customer.OrdersCount }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/customers-grid.js"></script>
+}
