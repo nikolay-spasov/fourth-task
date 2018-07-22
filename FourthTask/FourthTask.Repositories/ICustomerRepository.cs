@@ -9,7 +9,7 @@ namespace FourthTask.Repositories
     {
         Task<IEnumerable<CustomerListDTO>> GetCustomersByName(string customerName);
 
-        Task<FourthTask.DomainModels.CustomerDTO> GetCustomerById(string id);
+        Task<CustomerDTO> GetCustomerById(string id);
 
         Task<bool> CustomerExists(string id);
     }

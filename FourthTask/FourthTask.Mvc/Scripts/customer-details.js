@@ -40,6 +40,13 @@
                 if (value) return value;
 
                 return '-';
+            },
+            price: function (value) {
+                if (typeof (value) === 'number') {
+                    return '$' + value.toFixed(2);
+                }
+
+                return value;
             }
         },
         beforeMount: function () {

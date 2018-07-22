@@ -38,14 +38,14 @@ namespace FourthTask.Repositories
                 .ToListAsync();
         }
 
-        public async Task<FourthTask.DomainModels.CustomerDTO> GetCustomerById(string id)
+        public async Task<CustomerDTO> GetCustomerById(string id)
         {
             ThrowIfInvalidCustomerId(id);
 
             var dbCustomer = await _db.Customers.FindAsync(id);
             if (dbCustomer == null) return null;
 
-            return new FourthTask.DomainModels.CustomerDTO
+            return new CustomerDTO
             {
                 CustomerId = dbCustomer.CustomerID,
                 Address = dbCustomer.Address,

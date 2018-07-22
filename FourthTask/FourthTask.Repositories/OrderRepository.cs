@@ -23,30 +23,43 @@ namespace FourthTask.Repositories
             if (customerId == null) throw new ArgumentNullException(nameof(customerId));
             if (string.IsNullOrWhiteSpace(customerId)) throw new ArgumentException("Invalid customerId", nameof(customerId));
 
-            return await _db.Orders
+            var orders = await _db.Orders
                 .Include(x => x.Order_Details)
                 .Include(x => x.Order_Details.Select(p => p.Product))
                 .Where(x => x.CustomerID == customerId)
-                .Select(x => new OrderDetailsDTO
-                {
-                    OrderId = x.OrderID,
-                    Freight = x.Freight,
-                    OrderDate = x.OrderDate,
-                    RequiredDate = x.RequiredDate,
-                    ShippedDate = x.ShippedDate,
-                    ShipAddress = x.ShipAddress,
-                    ShipCity = x.ShipCity,
-                    ShipCountry = x.ShipCountry,
-                    ShipName = x.ShipName,
-                    ShipPostalCode = x.ShipPostalCode,
-                    ShipRegion = x.ShipRegion,
-                    ProductsCount = x.Order_Details.Sum(o => o.Quantity),
-                    Total = x.Order_Details.Sum(c => c.UnitPrice * c.Quantity),
-                    ContainsDiscontinuedProduct = x.Order_Details.Any(p => p.Product.Discontinued),
-                    UnitsInStockAreLessThanOrdered = x.Order_Details.Any(p => p.Product.UnitsInStock < p.Product.UnitsOnOrder),
-                })
                 .OrderByDescending(x => x.OrderDate)
                 .ToListAsync();
+
+            return MapToOrderDetailsDTO(orders);
+        }
+
+        private IEnumerable<OrderDetailsDTO> MapToOrderDetailsDTO(IEnumerable<Order> orders)
+        {
+            // Total price should be calculated in memory since LINQ-to-Entities is unable to cast Discount to decimal
+            var ls = new List<OrderDetailsDTO>();
+            foreach (var o in orders)
+            {
+                ls.Add(new OrderDetailsDTO
+                {
+                    OrderId = o.OrderID,
+                    Freight = o.Freight,
+                    OrderDate = o.OrderDate,
+                    RequiredDate = o.RequiredDate,
+                    ShippedDate = o.ShippedDate,
+                    ShipAddress = o.ShipAddress,
+                    ShipCity = o.ShipCity,
+                    ShipCountry = o.ShipCountry,
+                    ShipName = o.ShipName,
+                    ShipPostalCode = o.ShipPostalCode,
+                    ShipRegion = o.ShipRegion,
+                    ProductsCount = o.Order_Details.Sum(x => x.Quantity),
+                    ContainsDiscontinuedProduct = o.Order_Details.Any(p => p.Product.Discontinued),
+                    UnitsInStockAreLessThanOrdered = o.Order_Details.Any(p => p.Product.UnitsInStock < p.Product.UnitsOnOrder),
+                    Total = o.Order_Details.Sum(c => c.UnitPrice * c.Quantity * (1 - (decimal)c.Discount) / 100) * 100,
+                });
+            }
+
+            return ls;
         }
     }
 }
