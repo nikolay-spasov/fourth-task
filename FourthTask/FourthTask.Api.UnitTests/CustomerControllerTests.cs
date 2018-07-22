@@ -42,8 +42,11 @@ namespace FourthTask.Api.UnitTests
             }
         }
 
-        [TestMethod]
-        public async Task GetCustomerShouldReturnBadRequestIfCustomerIdIsInvalid()
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GetCustomerShouldReturnBadRequestIfCustomerIdIsInvalid(string customerId)
         {
             // Arrange
             var data = MockCustomers.GetCustomers();
@@ -52,20 +55,17 @@ namespace FourthTask.Api.UnitTests
 
             var controller = new CustomerController(mockCustomersRepository.Object, mockOrderRepository.Object);
 
-            foreach (var id in new[] { null, "", " " })
-            {
-                // Act
-                IHttpActionResult result = await controller.GetCustomer(id) as BadRequestErrorMessageResult;
+            // Act
+            IHttpActionResult result = await controller.GetCustomer(customerId) as BadRequestErrorMessageResult;
 
-                // Assert
-                Assert.IsInstanceOfType(result, typeof(BadRequestErrorMessageResult));
-            }
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestErrorMessageResult));
         }
 
         [TestMethod]
         public async Task GetCustomerShouldReturn404IfCustomerIdNotFound()
         {
-            // Assert
+            // Arrange
             var mockCustomersRepository = new Mock<ICustomerRepository>();
             mockCustomersRepository
                 .Setup(x => x.GetCustomerById(It.IsAny<string>()))
@@ -77,6 +77,48 @@ namespace FourthTask.Api.UnitTests
 
             // Act
             IHttpActionResult result = await controller.GetCustomer("TEST-MISSING-ID");
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public async Task GetOrdersShouldReturnBadRequestIfInvalidCustomerId(string customerId)
+        {
+            // Arrange
+            var data = MockCustomers.GetCustomers();
+            var mockCustomersRepository = new Mock<ICustomerRepository>();
+            var mockOrderRepository = new Mock<IOrderRepository>();
+
+            var controller = new CustomerController(mockCustomersRepository.Object, mockOrderRepository.Object);
+
+            // Act
+            IHttpActionResult result = await controller.GetOrders(customerId) as BadRequestErrorMessageResult;
+
+            // Assert
+            Assert.IsInstanceOfType(result, typeof(BadRequestErrorMessageResult));
+        }
+
+        [TestMethod]
+        public async Task GetOrdersShouldReturn404IfCustomerIdNotFound()
+        {
+            // Arrange
+            var mockCustomersRepository = new Mock<ICustomerRepository>();
+            mockCustomersRepository
+                .Setup(x => x.GetCustomerById(It.IsAny<string>()))
+                .Returns(Task.FromResult<CustomerDTO>(null));
+            mockCustomersRepository.Setup(x => x.CustomerExists(It.IsAny<string>()))
+                .Returns(Task.FromResult(false));
+
+            var mockOrderRepository = new Mock<IOrderRepository>();
+
+            var controller = new CustomerController(mockCustomersRepository.Object, mockOrderRepository.Object);
+
+            // Act
+            IHttpActionResult result = await controller.GetOrders("TEST-MISSING-ID");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));

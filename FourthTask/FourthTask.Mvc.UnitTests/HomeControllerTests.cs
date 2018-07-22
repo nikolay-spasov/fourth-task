@@ -51,22 +51,22 @@ namespace FourthTask.Mvc.UnitTests
             Assert.AreEqual("Test", result.Model);
         }
 
-        [TestMethod]
-        public void CustomerShoulRedirectToIndexIfInvalidId()
+        [DataTestMethod]
+        [DataRow(null)]
+        [DataRow("")]
+        [DataRow(" ")]
+        public void CustomerShoulRedirectToIndexIfInvalidId(string customerId)
         {
             // Arrange
             var controller = new HomeController();
 
-            foreach (var id in new[] { null, "", " " })
-            {
-                // Act
-                var result = controller.Customer(id) as RedirectToRouteResult;
+            // Act
+            var result = controller.Customer(customerId) as RedirectToRouteResult;
 
-                // Assert
-                Assert.IsNotNull(result);
-                Assert.AreEqual(false, result.Permanent);
-                Assert.AreEqual("Index", result.RouteValues["action"]);
-            }
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.AreEqual(false, result.Permanent);
+            Assert.AreEqual("Index", result.RouteValues["action"]);
         }
     }
 }

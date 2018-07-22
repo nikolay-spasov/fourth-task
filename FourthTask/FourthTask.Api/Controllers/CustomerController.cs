@@ -49,7 +49,7 @@ namespace FourthTask.Api.Controllers
         [HttpGet]
         public async Task<IHttpActionResult> GetOrders(string id)
         {
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrWhiteSpace(id))
             {
                 return BadRequest("Invalid customer id.");
             }
