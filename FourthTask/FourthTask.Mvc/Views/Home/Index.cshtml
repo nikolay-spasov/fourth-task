@@ -1,11 +1,14 @@
-﻿@{
+﻿@model IEnumerable<FourthTask.Mvc.Models.CustomerListVM>
+
+@{
     ViewBag.Title = "Customers List";
 }
 
 <div class="row" id="app">
     <div class="row">
-        <div class="form col-md-6">
-            <input v-model="term" v-on:input="search" placeholder="Search by name" class="form-control" type="text" />
+        <div class="form form-inline col-md-8">
+            <input placeholder="Search by name" class="form-control" type="text" id="search-term" />
+            <button class="btn btn-primary" id="search-btn">Search</button>
         </div>
     </div>
     <div class="row" style="margin-top: 20px">
@@ -20,10 +23,13 @@
                     </thead>
                     <tfoot></tfoot>
                     <tbody>
-                        <tr v-for="customer in customers" v-on:click="customerSelected(customer.CustomerId)" style="cursor: pointer;">
-                            <td>{{ customer.ContactName }}</td>
-                            <td>{{ customer.OrdersCount }}</td>
-                        </tr>
+                        @foreach (var customer in @Model)
+                        {
+                            <tr>
+                                <td>@Html.ActionLink(customer.ContactName, "CustomerDetails", new { id = customer.CustomerId })</td>
+                                <td>@customer.OrdersCount</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
@@ -33,5 +39,25 @@
 
 @section scripts
 {
-    <script src="~/Scripts/customers-grid.js"></script>
+    <script>
+        $(document).ready(function () {
+            var termField = $('#search-term');
+
+            var oldHref = window.location.href;
+            if (oldHref.indexOf('?term=') >= 0) {
+                termField.val(oldHref.split('?term=')[1]);
+            } else {
+                termField.val('');
+            }
+
+            $('#search-btn').click(function () {
+                if (termField.val()) {
+                    window.location.href = '/Home?term=' + termField.val();
+                } else {
+                    window.location.href = '/Home';
+                }
+            });
+        });
+    </script>
 }
+

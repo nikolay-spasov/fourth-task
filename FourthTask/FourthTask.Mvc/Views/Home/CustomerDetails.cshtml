@@ -1,11 +1,10 @@
-﻿@model string
+﻿@model FourthTask.Mvc.Models.CustomerVM
 
 @{
     ViewBag.Title = "Customer Details";
 }
 
 <div id="app" class="row">
-    <input id="customerId" type="hidden" value="@Model" />
     <div class="row">
         <div class="col-sm-8" style="padding-left: 0">
             <div class="panel panel-default">
@@ -16,45 +15,45 @@
                             <img src="~/Content/Images/user-icon.png" class="col-md-10 col-sm-10 col-xs-10 thumbnail img-responsive center-block" />
                         </div>
                         <div class="row">
-                            <h4 class="text-primary text-left">{{customer.ContactName}}</h4>
+                            <h4 class="text-primary text-left">@Model.ContactName</h4>
                         </div>
                     </div>
                     <div class="col-sm-6 col-xs-6">
                         <div class="row">
                             <div class="col-sm-5 text-muted">Company Name</div>
-                            <div class="col-sm-7">{{customer.CompanyName}}</div>
+                            <div class="col-sm-7">@Model.CompanyName</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">Contact Title</div>
-                            <div class="col-sm-7">{{customer.ContactTitle}}</div>
+                            <div class="col-sm-7">@Model.ContactTitle</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">Address</div>
-                            <div class="col-sm-7">{{customer.Address}}</div>
+                            <div class="col-sm-7">@Model.Address</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">City</div>
-                            <div class="col-sm-7">{{customer.City}}</div>
+                            <div class="col-sm-7">@Model.City</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">Region</div>
-                            <div class="col-sm-7">{{customer.Region}}</div>
+                            <div class="col-sm-7">@Model.Region</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">Postal Code</div>
-                            <div class="col-sm-7">{{customer.PostalCode}}</div>
+                            <div class="col-sm-7">@Model.PostalCode</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">Country</div>
-                            <div class="col-sm-7">{{customer.Country}}</div>
+                            <div class="col-sm-7">@Model.Country</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">Phone</div>
-                            <div class="col-sm-7">{{customer.Phone}}</div>
+                            <div class="col-sm-7">@Model.Phone</div>
                         </div>
                         <div class="row">
                             <div class="col-sm-5 text-muted">Fax</div>
-                            <div class="col-sm-7">{{customer.Fax}}</div>
+                            <div class="col-sm-7">@Model.Fax</div>
                         </div>
                     </div>
                 </div>
@@ -82,31 +81,35 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="order in orders">
-                        <td>{{ order.OrderDate | formatDate }}</td>
-                        <td>{{ order.RequiredDate | formatDate }}</td>
-                        <td>{{ order.ShippedDate | formatDate }}</td>
-                        <td>{{ order.ShipName }}</td>
-                        <td>{{ order.ShipAddress }}</td>
-                        <td>{{ order.ShipCity }}</td>
-                        <td>{{ order.ShipCountry }}</td>
-                        <td>{{ order.ShipRegion }}</td>
-                        <td>{{ order.ShipPostalCode }}</td>
-                        <td>{{ order.ProductsCount }}</td>
-                        <td>{{ order.Freight | price }}</td>
-                        <td>{{ order.TotalPrice | price }}</td>
-                        <td>
-                            <div class="text-warning" v-bind:class="{ 'hidden': !order.ContainsDiscontinuedProduct }">This order contains discontinued products!</div>
-                            <div class="text-danger" v-bind:class="{ 'hidden': !order.ContainsProductsInStockLessThanOrderedProducts }">Not enough units in stock!</div>
-                        </td>
-                    </tr>
+                    @foreach (var order in Model.Orders)
+                    {
+                        <tr>
+                            <td>@order.OrderDate</td>
+                            <td>@order.RequiredDate</td>
+                            <td>@order.ShippedDate</td>
+                            <td>@order.ShipName</td>
+                            <td>@order.ShipAddress</td>
+                            <td>@order.ShipCity</td>
+                            <td>@order.ShipCountry}</td>
+                            <td>@order.ShipRegion</td>
+                            <td>@order.ShipPostalCode</td>
+                            <td>@order.ProductsCount</td>
+                            <td>@order.Freight</td>
+                            <td>@order.TotalPrice</td>
+                            <td>
+                                @if (order.ContainsDiscontinuedProduct)
+                                {
+                                    <div class="text-warning">This order contains discontinued products!</div>
+                                }
+                                @if (order.ContainsProductsInStockLessThanOrderedProducts)
+                                {
+                                    <div class="text-danger">Not enough units in stock!</div>
+                                }
+                            </td>
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
     </div>
 </div>
-
-@section scripts
-{
-    <script src="~/Scripts/customer-details.js"></script>
-}
