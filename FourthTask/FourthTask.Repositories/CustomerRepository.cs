@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using FourthTask.Data;
@@ -22,7 +23,8 @@ namespace FourthTask.Repositories
             _dbCustomerToDomainCustomerMapper = dbCustomerToDomainCustomerMapper ?? throw new ArgumentNullException(nameof(dbCustomerToDomainCustomerMapper));
         }
 
-        public async Task<IEnumerable<CustomerListRow>> GetCustomersByName(string customerName = null)
+        public async Task<IEnumerable<CustomerListRow>> GetCustomersByName(string customerName = null, 
+            CancellationToken cancellationToken = default(CancellationToken))
         {
             var query = _db.Customers.Include(x => x.Orders);
             if (string.IsNullOrWhiteSpace(customerName) == false)
@@ -39,24 +41,24 @@ namespace FourthTask.Repositories
                     ContactName = x.Key.ContactName,
                     OrdersCount = x.SelectMany(o => o.Orders).Count()
                 })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<DomainModels.Customer> GetCustomerById(string id)
+        public async Task<DomainModels.Customer> GetCustomerById(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfInvalidCustomerId(id);
 
-            var dbCustomer = await _db.Customers.FindAsync(id);
+            var dbCustomer = await _db.Customers.FindAsync(cancellationToken, id);
             if (dbCustomer == null) return null;
 
             return _dbCustomerToDomainCustomerMapper.Map(dbCustomer);
         }
 
-        public async Task<bool> CustomerExists(string id)
+        public async Task<bool> CustomerExists(string id, CancellationToken cancellationToken = default(CancellationToken))
         {
             ThrowIfInvalidCustomerId(id);
 
-            return await _db.Customers.AnyAsync(x => x.CustomerID == id);
+            return await _db.Customers.AnyAsync(x => x.CustomerID == id, cancellationToken);
         }
 
         // https://stackoverflow.com/questions/538060/proper-use-of-the-idisposable-interface

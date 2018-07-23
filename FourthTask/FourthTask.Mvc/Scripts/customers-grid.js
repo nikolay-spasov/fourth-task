@@ -3,6 +3,9 @@
 
     new Vue({
         el: '#app',
+        http: {
+            root: 'http://localhost:57145/api/customers'
+        },
         data: {
             customers: [],
             term: null
@@ -12,7 +15,7 @@
                 window.location.href = '/Home/CustomerDetails/' + customerId;
             },
             search: function () {
-                var url = 'http://localhost:57145/api/customers';
+                var url = '';
                 if (this.term) {
                     url += '?term=' + this.term;
                 }

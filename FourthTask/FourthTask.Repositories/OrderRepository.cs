@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using FourthTask.Data;
@@ -21,7 +22,7 @@ namespace FourthTask.Repositories
             _dbOrderToDomainOrderMapper = dbOrderToDomainOrderMapper ?? throw new ArgumentNullException(nameof(dbOrderToDomainOrderMapper));
         }
 
-        public async Task<IEnumerable<FourthTask.DomainModels.Order>> GetOrdersForCustomer(string customerId)
+        public async Task<IEnumerable<FourthTask.DomainModels.Order>> GetOrdersForCustomer(string customerId, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (customerId == null) throw new ArgumentNullException(nameof(customerId));
             if (string.IsNullOrWhiteSpace(customerId)) throw new ArgumentException("Invalid customerId", nameof(customerId));
@@ -32,7 +33,7 @@ namespace FourthTask.Repositories
                 .Where(x => x.CustomerID == customerId)
                 .Select(_dbOrderToDomainOrderMapper.Map())
                 .OrderByDescending(x => x.OrderDate)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
         public void Dispose()

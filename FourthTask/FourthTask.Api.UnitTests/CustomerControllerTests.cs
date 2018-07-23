@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -28,7 +29,7 @@ namespace FourthTask.Api.UnitTests
                 var data = MockCustomers.GetCustomers();
 
                 var customerRepo = new Mock<ICustomerRepository>();
-                customerRepo.Setup(x => x.GetCustomersByName(It.IsAny<string>()))
+                customerRepo.Setup(x => x.GetCustomersByName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                     .Returns(Task.FromResult(data));
                 var mockOrderRepository = new Mock<IOrderRepository>();
 
@@ -70,7 +71,7 @@ namespace FourthTask.Api.UnitTests
             // Arrange
             var mockCustomersRepository = new Mock<ICustomerRepository>();
             mockCustomersRepository
-                .Setup(x => x.GetCustomerById(It.IsAny<string>()))
+                .Setup(x => x.GetCustomerById(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<Customer>(null));
 
             var mockOrderRepository = new Mock<IOrderRepository>();
@@ -110,9 +111,9 @@ namespace FourthTask.Api.UnitTests
             // Arrange
             var mockCustomersRepository = new Mock<ICustomerRepository>();
             mockCustomersRepository
-                .Setup(x => x.GetCustomerById(It.IsAny<string>()))
+                .Setup(x => x.GetCustomerById(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult<Customer>(null));
-            mockCustomersRepository.Setup(x => x.CustomerExists(It.IsAny<string>()))
+            mockCustomersRepository.Setup(x => x.CustomerExists(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(false));
 
             var mockOrderRepository = new Mock<IOrderRepository>();

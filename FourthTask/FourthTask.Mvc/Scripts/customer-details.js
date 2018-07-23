@@ -1,17 +1,19 @@
-﻿'use strict';
-    var baseUrl = 'http://localhost:57145/api/customer/';
-
+﻿(function () {
+    'use strict';
     new Vue({
         el: '#app',
+        http: {
+            root: 'http://localhost:57145/api/customer'
+        },
         data: {
             customer: {},
             orders: [],
-            customerId: null,
+            customerId: null
         },
         methods: {
             getCustomer: function () {
                 var vm = this;
-                this.$http.get(baseUrl + this.customerId)
+                this.$http.get(this.customerId)
                     .then(function (response) {
                         if (response.status === 200) {
                             vm.customer = response.body;
@@ -23,13 +25,13 @@
             },
             getOrders: function () {
                 var vm = this;
-                this.$http.get(baseUrl + this.customerId + '/orders')
+                this.$http.get(this.customerId + '/orders')
                     .then(function (response) {
                         if (response.status === 200) {
                             vm.orders = response.body;
                         }
                     });
-            },
+            }
         },
         filters: {
             formatDate: function (value) {
@@ -42,7 +44,7 @@
                 return '-';
             },
             price: function (value) {
-                if (typeof (value) === 'number') {
+                if (typeof value === 'number') {
                     return '$' + value.toFixed(2);
                 }
 
@@ -54,4 +56,4 @@
             this.getCustomer();
         }
     });
-
+})();
