@@ -9,7 +9,7 @@ namespace FourthTask.Mvc.Controllers
             return View();
         }
 
-        public ActionResult Customer(string id)
+        public ActionResult CustomerDetails(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {

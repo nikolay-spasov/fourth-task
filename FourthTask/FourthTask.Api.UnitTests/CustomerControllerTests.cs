@@ -22,7 +22,7 @@ namespace FourthTask.Api.UnitTests
         public class CustomersControllerTests
         {
             [TestMethod]
-            public async Task GetCustomersReturnsAllCustomers()
+            public async Task GetCustomers_ShouldReturnAllCustomers()
             {
                 // Arrange
                 var data = MockCustomers.GetCustomers();
@@ -48,7 +48,7 @@ namespace FourthTask.Api.UnitTests
         [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GetCustomerShouldReturnBadRequestIfCustomerIdIsInvalid(string customerId)
+        public async Task GetCustomer_ShouldReturnBadRequestIfCustomerIdIsInvalid(string customerId)
         {
             // Arrange
             var data = MockCustomers.GetCustomers();
@@ -65,7 +65,7 @@ namespace FourthTask.Api.UnitTests
         }
 
         [TestMethod]
-        public async Task GetCustomerShouldReturn404IfCustomerIdNotFound()
+        public async Task GetCustomer_ShouldReturn404IfCustomerIdNotFound()
         {
             // Arrange
             var mockCustomersRepository = new Mock<ICustomerRepository>();
@@ -88,7 +88,7 @@ namespace FourthTask.Api.UnitTests
         [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public async Task GetOrdersShouldReturnBadRequestIfInvalidCustomerId(string customerId)
+        public async Task GetOrders_ShouldReturnBadRequestIfInvalidCustomerId(string customerId)
         {
             // Arrange
             var data = MockCustomers.GetCustomers();
@@ -105,7 +105,7 @@ namespace FourthTask.Api.UnitTests
         }
 
         [TestMethod]
-        public async Task GetOrdersShouldReturn404IfCustomerIdNotFound()
+        public async Task GetOrders_ShouldReturn404IfCustomerIdNotFound()
         {
             // Arrange
             var mockCustomersRepository = new Mock<ICustomerRepository>();

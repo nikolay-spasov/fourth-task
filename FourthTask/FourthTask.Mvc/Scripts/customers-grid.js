@@ -9,7 +9,7 @@
         },
         methods: {
             customerSelected: function (customerId) {
-                window.location.href = '/Home/Customer/' + customerId;
+                window.location.href = '/Home/CustomerDetails/' + customerId;
             },
             search: function () {
                 var url = 'http://localhost:57145/api/customers';

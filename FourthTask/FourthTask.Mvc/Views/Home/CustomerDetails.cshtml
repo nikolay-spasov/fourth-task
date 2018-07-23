@@ -1,0 +1,110 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "Customer Details";
+}
+
+<div id="app" class="row">
+    <input id="customerId" type="hidden" value="@Model" />
+    <div class="row">
+        <div class="col-sm-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">Customer Information</div>
+                <div class="panel-body">
+                    <div class="col-sm-4 col-xs-4 col-md-4">
+                        <div class="row">
+                            <img src="~/Content/Images/user-icon.png" class="col-md-10 col-sm-10 col-xs-10 img-responsive" />
+                        </div>
+                        <h4 class="text-primary">{{customer.ContactName}}</h4>
+                    </div>
+                    <div class="col-sm-6 col-xs-6">
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Company Name</div>
+                            <div class="col-sm-7">{{customer.CompanyName}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Contact Title</div>
+                            <div class="col-sm-7">{{customer.ContactTitle}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Address</div>
+                            <div class="col-sm-7">{{customer.Address}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">City</div>
+                            <div class="col-sm-7">{{customer.City}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Region</div>
+                            <div class="col-sm-7">{{customer.Region}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Postal Code</div>
+                            <div class="col-sm-7">{{customer.PostalCode}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Country</div>
+                            <div class="col-sm-7">{{customer.Country}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Phone</div>
+                            <div class="col-sm-7">{{customer.Phone}}</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-5 text-muted">Fax</div>
+                            <div class="col-sm-7">{{customer.Fax}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-hover table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Order Date</th>
+                        <th>Required Date</th>
+                        <th>Shipped Date</th>
+                        <th>Ship Name</th>
+                        <th>Ship Address</th>
+                        <th>Ship City</th>
+                        <th>Ship Country</th>
+                        <th>Ship Region</th>
+                        <th>Ship Postal Code</th>
+                        <th>Products</th>
+                        <th>Freight</th>
+                        <th>Total</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="order in orders">
+                        <td>{{ order.OrderDate | formatDate }}</td>
+                        <td>{{ order.RequiredDate | formatDate }}</td>
+                        <td>{{ order.ShippedDate | formatDate }}</td>
+                        <td>{{ order.ShipName }}</td>
+                        <td>{{ order.ShipAddress }}</td>
+                        <td>{{ order.ShipCity }}</td>
+                        <td>{{ order.ShipCountry }}</td>
+                        <td>{{ order.ShipRegion }}</td>
+                        <td>{{ order.ShipPostalCode }}</td>
+                        <td>{{ order.ProductsCount }}</td>
+                        <td>{{ order.Freight | price }}</td>
+                        <td>{{ order.TotalPrice | price }}</td>
+                        <td>
+                            <div class="text-warning" v-bind:class="{ 'hidden': !order.ContainsDiscontinuedProduct }">This order contains discontinued products!</div>
+                            <div class="text-danger" v-bind:class="{ 'hidden': !order.ContainsProductsInStockLessThanOrderedProducts }">Not enough units in stock!</div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script src="~/Scripts/customer-details.js"></script>
+}

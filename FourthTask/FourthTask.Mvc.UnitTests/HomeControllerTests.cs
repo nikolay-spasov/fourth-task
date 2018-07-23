@@ -9,7 +9,7 @@ namespace FourthTask.Mvc.UnitTests
     public class HomeControllerTests
     {
         [TestMethod]
-        public void IndexReturnsDefaultViews()
+        public void Index_ShouldReturnDefaultViews()
         {
             // Arrange
             var controller = new HomeController();
@@ -23,13 +23,13 @@ namespace FourthTask.Mvc.UnitTests
         }
 
         [TestMethod]
-        public void CustomerReturnsDefaultViews()
+        public void CustomerDetails_ShouldReturnDefaultViews()
         {
             // Arrange
             var controller = new HomeController();
 
             // Act
-            var result = controller.Customer("Test") as ViewResult;
+            var result = controller.CustomerDetails("Test") as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -37,13 +37,13 @@ namespace FourthTask.Mvc.UnitTests
         }
 
         [TestMethod]
-        public void CustomerShouldPassIdAsModel()
+        public void CustomerDetails_ShouldPassIdAsModel()
         {
             // Arrange
             var controller = new HomeController();
 
             // Act
-            var result = controller.Customer("Test") as ViewResult;
+            var result = controller.CustomerDetails("Test") as ViewResult;
 
             // Assert
             Assert.IsNotNull(result);
@@ -55,13 +55,13 @@ namespace FourthTask.Mvc.UnitTests
         [DataRow(null)]
         [DataRow("")]
         [DataRow(" ")]
-        public void CustomerShoulRedirectToIndexIfInvalidId(string customerId)
+        public void CustomerDetails_ShoulRedirectToIndexIfInvalidId(string customerId)
         {
             // Arrange
             var controller = new HomeController();
 
             // Act
-            var result = controller.Customer(customerId) as RedirectToRouteResult;
+            var result = controller.CustomerDetails(customerId) as RedirectToRouteResult;
 
             // Assert
             Assert.IsNotNull(result);
