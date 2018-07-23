@@ -6,35 +6,35 @@ namespace FourthTask.Api.UnitTests.Data
 {
     public class MockCustomers
     {
-        public static IEnumerable<CustomerListDTO> GetCustomers()
+        public static IEnumerable<CustomerListRow> GetCustomers()
         {
-            return new List<CustomerListDTO>()
+            return new List<CustomerListRow>()
             {
-                new CustomerListDTO
+                new CustomerListRow
                 {
                     CustomerId = "Test1",
                     ContactName = "Test1",
                     OrdersCount = 1
                 },
-                new CustomerListDTO
+                new CustomerListRow
                 {
                     CustomerId = "Test2",
                     ContactName = "Test2",
                     OrdersCount = 2
                 },
-                new CustomerListDTO
+                new CustomerListRow
                 {
                     CustomerId = "Test3",
                     ContactName = "Test3",
                     OrdersCount = 3
                 },
-                new CustomerListDTO
+                new CustomerListRow
                 {
                     CustomerId = "Test4",
                     ContactName = "Test4",
                     OrdersCount = 4
                 },
-                new CustomerListDTO
+                new CustomerListRow
                 {
                     CustomerId = "Test5",
                     ContactName = "Test5",

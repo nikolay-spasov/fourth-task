@@ -6,19 +6,23 @@ using System.Threading.Tasks;
 
 using FourthTask.Data;
 using FourthTask.DomainModels;
+using FourthTask.Repositories.Factories;
 
 namespace FourthTask.Repositories
 {
-    public class CustomerRepository : ICustomerRepository
+    public class CustomerRepository : ICustomerRepository, IDisposable
     {
         private readonly NorthwindEntities _db;
+        private readonly IDbCustomerToDomainCustomerMapper _dbCustomerToDomainCustomerMapper;
+        private bool _disposed = false;
 
-        public CustomerRepository(NorthwindEntities db)
+        public CustomerRepository(NorthwindEntities db, IDbCustomerToDomainCustomerMapper dbCustomerToDomainCustomerMapper)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
+            _dbCustomerToDomainCustomerMapper = dbCustomerToDomainCustomerMapper ?? throw new ArgumentNullException(nameof(dbCustomerToDomainCustomerMapper));
         }
 
-        public async Task<IEnumerable<CustomerListDTO>> GetCustomersByName(string customerName = null)
+        public async Task<IEnumerable<CustomerListRow>> GetCustomersByName(string customerName = null)
         {
             var query = _db.Customers.Include(x => x.Orders);
             if (string.IsNullOrWhiteSpace(customerName) == false)
@@ -29,7 +33,7 @@ namespace FourthTask.Repositories
             return await query
                 .GroupBy(x => new { x.CustomerID, x.ContactName })
                 .OrderBy(x => x.Key.ContactName)
-                .Select(x => new CustomerListDTO
+                .Select(x => new CustomerListRow
                 {
                     CustomerId = x.Key.CustomerID,
                     ContactName = x.Key.ContactName,
@@ -38,27 +42,14 @@ namespace FourthTask.Repositories
                 .ToListAsync();
         }
 
-        public async Task<CustomerDTO> GetCustomerById(string id)
+        public async Task<DomainModels.Customer> GetCustomerById(string id)
         {
             ThrowIfInvalidCustomerId(id);
 
             var dbCustomer = await _db.Customers.FindAsync(id);
             if (dbCustomer == null) return null;
 
-            return new CustomerDTO
-            {
-                CustomerId = dbCustomer.CustomerID,
-                Address = dbCustomer.Address,
-                City = dbCustomer.City,
-                CompanyName = dbCustomer.CompanyName,
-                ContactName = dbCustomer.ContactName,
-                ContactTitle = dbCustomer.ContactTitle,
-                Country = dbCustomer.Country,
-                Fax = dbCustomer.Fax,
-                Phone = dbCustomer.Phone,
-                PostalCode = dbCustomer.PostalCode,
-                Region = dbCustomer.Region
-            };
+            return _dbCustomerToDomainCustomerMapper.Map(dbCustomer);
         }
 
         public async Task<bool> CustomerExists(string id)
@@ -66,6 +57,28 @@ namespace FourthTask.Repositories
             ThrowIfInvalidCustomerId(id);
 
             return await _db.Customers.AnyAsync(x => x.CustomerID == id);
+        }
+
+        // https://stackoverflow.com/questions/538060/proper-use-of-the-idisposable-interface
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    if (_db != null)
+                    {
+                        _db.Dispose();
+                    }
+                }
+                _disposed = true;
+            }
         }
 
         private void ThrowIfInvalidCustomerId(string id)

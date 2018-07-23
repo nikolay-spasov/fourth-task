@@ -48,6 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CustomerRepository.cs" />
+    <Compile Include="Factories\DbCustomerToDomainCustomerMapper.cs" />
+    <Compile Include="Factories\DbOrderToDomainOrderMapper.cs" />
+    <Compile Include="Factories\IDbCustomerToDomainCustomerMapper.cs" />
+    <Compile Include="Factories\IDbOrderToDomainOrderMapper.cs" />
     <Compile Include="ICustomerRepository.cs" />
     <Compile Include="IOrderRepository.cs" />
     <Compile Include="OrderRepository.cs" />

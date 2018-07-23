@@ -1,6 +1,6 @@
 ﻿namespace FourthTask.DomainModels
 {
-    public class CustomerListDTO
+    public class CustomerListRow
     {
         public string CustomerId { get; set; }
         public string ContactName { get; set; }

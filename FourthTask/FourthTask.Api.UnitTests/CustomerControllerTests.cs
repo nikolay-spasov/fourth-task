@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 using FourthTask.Api.Controllers;
+using FourthTask.Api.Factories;
+using FourthTask.Api.Models;
 using FourthTask.Api.UnitTests.Data;
 using FourthTask.DomainModels;
 using FourthTask.Repositories;
@@ -30,10 +32,10 @@ namespace FourthTask.Api.UnitTests
                     .Returns(Task.FromResult(data));
                 var mockOrderRepository = new Mock<IOrderRepository>();
 
-                var controller = new CustomerController(customerRepo.Object, mockOrderRepository.Object);
+                var controller = CreateControllerInstance(customerRepo.Object, mockOrderRepository.Object);
 
                 // Act
-                var response = await controller.GetCustomers() as OkNegotiatedContentResult<IEnumerable<CustomerListDTO>>;
+                var response = await controller.GetCustomers() as OkNegotiatedContentResult<IEnumerable<CustomerListVM>>;
                 var content = response.Content;
 
                 // Assert
@@ -53,7 +55,7 @@ namespace FourthTask.Api.UnitTests
             var mockCustomersRepository = new Mock<ICustomerRepository>();
             var mockOrderRepository = new Mock<IOrderRepository>();
 
-            var controller = new CustomerController(mockCustomersRepository.Object, mockOrderRepository.Object);
+            var controller = CreateControllerInstance(mockCustomersRepository.Object, mockOrderRepository.Object);
 
             // Act
             IHttpActionResult result = await controller.GetCustomer(customerId) as BadRequestErrorMessageResult;
@@ -69,11 +71,11 @@ namespace FourthTask.Api.UnitTests
             var mockCustomersRepository = new Mock<ICustomerRepository>();
             mockCustomersRepository
                 .Setup(x => x.GetCustomerById(It.IsAny<string>()))
-                .Returns(Task.FromResult<CustomerDTO>(null));
+                .Returns(Task.FromResult<Customer>(null));
 
             var mockOrderRepository = new Mock<IOrderRepository>();
 
-            var controller = new CustomerController(mockCustomersRepository.Object, mockOrderRepository.Object);
+            var controller = CreateControllerInstance(mockCustomersRepository.Object, mockOrderRepository.Object);
 
             // Act
             IHttpActionResult result = await controller.GetCustomer("TEST-MISSING-ID");
@@ -93,7 +95,7 @@ namespace FourthTask.Api.UnitTests
             var mockCustomersRepository = new Mock<ICustomerRepository>();
             var mockOrderRepository = new Mock<IOrderRepository>();
 
-            var controller = new CustomerController(mockCustomersRepository.Object, mockOrderRepository.Object);
+            var controller = CreateControllerInstance(mockCustomersRepository.Object, mockOrderRepository.Object);
 
             // Act
             IHttpActionResult result = await controller.GetOrders(customerId) as BadRequestErrorMessageResult;
@@ -109,19 +111,31 @@ namespace FourthTask.Api.UnitTests
             var mockCustomersRepository = new Mock<ICustomerRepository>();
             mockCustomersRepository
                 .Setup(x => x.GetCustomerById(It.IsAny<string>()))
-                .Returns(Task.FromResult<CustomerDTO>(null));
+                .Returns(Task.FromResult<Customer>(null));
             mockCustomersRepository.Setup(x => x.CustomerExists(It.IsAny<string>()))
                 .Returns(Task.FromResult(false));
 
             var mockOrderRepository = new Mock<IOrderRepository>();
 
-            var controller = new CustomerController(mockCustomersRepository.Object, mockOrderRepository.Object);
+            var controller = CreateControllerInstance(mockCustomersRepository.Object, mockOrderRepository.Object);
 
             // Act
             IHttpActionResult result = await controller.GetOrders("TEST-MISSING-ID");
 
             // Assert
             Assert.IsInstanceOfType(result, typeof(NotFoundResult));
+        }
+
+        private static CustomerController CreateControllerInstance(ICustomerRepository customerRepo, IOrderRepository orderRepo)
+        {
+            var controller = new CustomerController(
+                    customerRepo,
+                    orderRepo,
+                    new CustomerListRowToCustomerListVMMapper(),
+                    new CustomerToCustomerVMMapper(),
+                    new OrderToOrderVMMapper());
+
+            return controller;
         }
     }
 }

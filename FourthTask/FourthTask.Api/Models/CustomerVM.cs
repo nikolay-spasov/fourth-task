@@ -1,6 +1,6 @@
-﻿namespace FourthTask.DomainModels
+﻿namespace FourthTask.Api.Models
 {
-    public class CustomerDTO
+    public class CustomerVM
     {
         public string CustomerId { get; set; }
         public string CompanyName { get; set; }

@@ -57,10 +57,10 @@
                     <td>{{ order.ShipPostalCode }}</td>
                     <td>{{ order.ProductsCount }}</td>
                     <td>{{ order.Freight | price }}</td>
-                    <td>{{ order.Total | price }}</td>
+                    <td>{{ order.TotalPrice | price }}</td>
                     <td>
                         <div class="text-warning" v-bind:class="{ 'hidden': !order.ContainsDiscontinuedProduct }">This order contains discontinued products!</div>
-                        <div class="text-danger" v-bind:class="{ 'hidden': !order.UnitsInStockAreLessThanOrdered }">Not enough units in stock!</div>
+                        <div class="text-danger" v-bind:class="{ 'hidden': !order.ContainsProductsInStockLessThanOrderedProducts }">Not enough units in stock!</div>
                     </td>
                 </tr>
             </tbody>

@@ -7,6 +7,6 @@ namespace FourthTask.Repositories
 {
     public interface IOrderRepository
     {
-        Task<IEnumerable<OrderDetailsDTO>> GetOrdersForCustomer(string customerId);
+        Task<IEnumerable<Order>> GetOrdersForCustomer(string customerId);
     }
 }

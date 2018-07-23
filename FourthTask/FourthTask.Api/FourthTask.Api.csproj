@@ -106,9 +106,18 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Configuration\DependencyInjectionConfiguration.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Factories\CustomerListRowToCustomerListVMMapper.cs" />
+    <Compile Include="Factories\CustomerToCustomerVMMapper.cs" />
+    <Compile Include="Factories\ICustomerListRowToCustomerListVMMapper.cs" />
+    <Compile Include="Factories\ICustomerToCustomerVMMapper.cs" />
+    <Compile Include="Factories\IOrderToOrderVMMapper.cs" />
+    <Compile Include="Factories\OrderToOrderVMMapper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CustomerListVM.cs" />
+    <Compile Include="Models\CustomerVM.cs" />
+    <Compile Include="Models\OrderVM.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -122,7 +131,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FourthTask.Data\FourthTask.Data.csproj">

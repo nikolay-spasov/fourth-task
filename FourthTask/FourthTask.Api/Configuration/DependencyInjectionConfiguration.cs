@@ -2,8 +2,10 @@
 using Autofac;
 using Autofac.Integration.WebApi;
 
+using FourthTask.Api.Factories;
 using FourthTask.Data;
 using FourthTask.Repositories;
+using FourthTask.Repositories.Factories;
 
 namespace FourthTask.Api.Configuration
 {
@@ -21,6 +23,24 @@ namespace FourthTask.Api.Configuration
 
             // EF DbContext
             builder.RegisterType<NorthwindEntities>()
+                .InstancePerRequest();
+
+            // Mappers
+            builder.RegisterType<DbOrderToDomainOrderMapper>()
+                .As<IDbOrderToDomainOrderMapper>()
+                .InstancePerRequest();
+            builder.RegisterType<DbCustomerToDomainCustomerMapper>()
+               .As<IDbCustomerToDomainCustomerMapper>()
+               .InstancePerRequest();
+
+            builder.RegisterType<CustomerListRowToCustomerListVMMapper>()
+                .As<ICustomerListRowToCustomerListVMMapper>()
+                .InstancePerRequest();
+            builder.RegisterType<CustomerToCustomerVMMapper>()
+                .As<ICustomerToCustomerVMMapper>()
+                .InstancePerRequest();
+            builder.RegisterType<OrderToOrderVMMapper>()
+                .As<IOrderToOrderVMMapper>()
                 .InstancePerRequest();
 
             // Repositories
